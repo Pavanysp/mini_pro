@@ -1,17 +1,39 @@
 package com.example.ESD.model;
 
-import lombok.Data;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Data
-@Table(name = "faculty")
 public class Faculty {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int fid;
+
     private String username;
     private String password;
+
+    // Getters and Setters
+    public int getFid() {
+        return fid;
+    }
+
+    public void setFid(int fid) {
+        this.fid = fid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
