@@ -24,11 +24,18 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest authRequest) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
+
+        // Verify the password using BCrypt
+        if (!userDetailsService.verifyPassword(authRequest.getPassword(), userDetails.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
+
         String jwt = jwtUtil.generateToken(userDetails);
         return new AuthResponse(jwt);
     }
