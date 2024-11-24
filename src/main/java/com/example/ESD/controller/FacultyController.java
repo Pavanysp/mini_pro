@@ -46,9 +46,11 @@ public class FacultyController {
 
     // Grade multiple students
     @PostMapping("/courses/{courseId}/grade")
-    public String gradeStudents(@PathVariable int courseId, @RequestBody GradeRequest gradeRequest) {
-        String username = getAuthenticatedUser();
-        return facultyService.gradeStudents(username, courseId, gradeRequest.getStudentIds()); // Use gradeRequest.getStudentIds()
+    public String gradeStudents(
+            @PathVariable int courseId,
+            @RequestBody GradeRequest gradeRequest) {
+        String username = getAuthenticatedUser();  // Get the authenticated faculty user
+        return facultyService.gradeStudents(username, courseId, gradeRequest.getStudentIds(), gradeRequest.getGrades());
     }
 
     // Helper method to get the authenticated username from the JWT token

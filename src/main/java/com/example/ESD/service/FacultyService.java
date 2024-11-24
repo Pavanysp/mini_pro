@@ -47,42 +47,44 @@ public class FacultyService {
     }
 
     // Grade a student
+    public String gradeStudents(String username, int courseId, List<Integer> studentIds, List<String> grades) {
+        if (studentIds.size() != grades.size()) {
+            throw new IllegalArgumentException("Number of students and grades must match");
+        }
+
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < studentIds.size(); i++) {
+            int studentId = studentIds.get(i);
+            String grade = grades.get(i);
+
+            // Grade each student
+            String gradingResult = gradeStudent(username, courseId, studentId, grade);
+            result.append(gradingResult).append("\n");
+        }
+
+        return "Graded " + studentIds.size() + " students in course " + courseId + "\n" + result.toString();
+    }
+
+    // Single student grading method
     public String gradeStudent(String username, int courseId, int studentId, String grade) {
-        // Retrieve the student by ID
+        // Retrieve student and course by their IDs
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        // Retrieve the course by ID
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
-        // Retrieve the enrollment (relationship between student and course)
+        // Find the enrollment (student-course relation)
         Enrollment enrollment = enrollmentRepository.findByStudentAndCourse(student, course)
                 .orElseThrow(() -> new RuntimeException("Enrollment not found"));
 
-        // Set the grade for the student in the course
+        // Set the grade for the student
         enrollment.setGrade(grade);
 
-        // Save the updated enrollment with the grade
+        // Save the updated enrollment
         enrollmentRepository.save(enrollment);
 
-        // Return a message indicating the student was graded
         return "Graded student " + studentId + " in course " + courseId + " with grade " + grade;
-    }
-
-
-    // Grade multiple students
-    public String gradeStudents(String username, int courseId, List<Integer> studentIds) {
-        StringBuilder result = new StringBuilder();
-
-        // Loop through each student and call gradeStudent
-        studentIds.forEach(studentId -> {
-            String gradingResult = gradeStudent(username, courseId, studentId, "A");  // Default grade "A"
-            result.append(gradingResult).append("\n");  // Append the result for each student
-        });
-
-        // Return a summary message
-        return "Graded " + studentIds.size() + " students in course " + courseId + "\n" + result.toString();
     }
 
 
