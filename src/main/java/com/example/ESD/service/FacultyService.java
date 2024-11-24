@@ -1,9 +1,11 @@
 package com.example.ESD.service;
 
 import com.example.ESD.model.Course;
+import com.example.ESD.model.Enrollment;
 import com.example.ESD.model.Student;
 import com.example.ESD.model.Teaching;
 import com.example.ESD.repository.CourseRepository;
+import com.example.ESD.repository.EnrollmentRepository;
 import com.example.ESD.repository.StudentRepository;
 import com.example.ESD.repository.TeachingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class FacultyService {
 
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
 
     // Get courses taught by the faculty
     public List<Course> getCoursesByFaculty(String username) {
@@ -44,13 +48,42 @@ public class FacultyService {
 
     // Grade a student
     public String gradeStudent(String username, int courseId, int studentId, String grade) {
-        // Logic to grade a student
+        // Retrieve the student by ID
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        // Retrieve the course by ID
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        // Retrieve the enrollment (relationship between student and course)
+        Enrollment enrollment = enrollmentRepository.findByStudentAndCourse(student, course)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+
+        // Set the grade for the student in the course
+        enrollment.setGrade(grade);
+
+        // Save the updated enrollment with the grade
+        enrollmentRepository.save(enrollment);
+
+        // Return a message indicating the student was graded
         return "Graded student " + studentId + " in course " + courseId + " with grade " + grade;
     }
 
+
     // Grade multiple students
     public String gradeStudents(String username, int courseId, List<Integer> studentIds) {
-        studentIds.forEach(studentId -> gradeStudent(username, courseId, studentId, "A"));  // Default grade for simplicity
-        return "Graded " + studentIds.size() + " students in course " + courseId;
+        StringBuilder result = new StringBuilder();
+
+        // Loop through each student and call gradeStudent
+        studentIds.forEach(studentId -> {
+            String gradingResult = gradeStudent(username, courseId, studentId, "A");  // Default grade "A"
+            result.append(gradingResult).append("\n");  // Append the result for each student
+        });
+
+        // Return a summary message
+        return "Graded " + studentIds.size() + " students in course " + courseId + "\n" + result.toString();
     }
+
+
 }

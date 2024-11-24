@@ -1,6 +1,7 @@
 package com.example.ESD.controller;
 
 import com.example.ESD.model.Course;
+import com.example.ESD.model.GradeRequest;
 import com.example.ESD.model.Student;
 import com.example.ESD.model.Teaching;
 import com.example.ESD.service.FacultyService;
@@ -45,9 +46,9 @@ public class FacultyController {
 
     // Grade multiple students
     @PostMapping("/courses/{courseId}/grade")
-    public String gradeStudents(@PathVariable int courseId, @RequestBody List<Integer> studentIds) {
+    public String gradeStudents(@PathVariable int courseId, @RequestBody GradeRequest gradeRequest) {
         String username = getAuthenticatedUser();
-        return facultyService.gradeStudents(username, courseId, studentIds);
+        return facultyService.gradeStudents(username, courseId, gradeRequest.getStudentIds()); // Use gradeRequest.getStudentIds()
     }
 
     // Helper method to get the authenticated username from the JWT token

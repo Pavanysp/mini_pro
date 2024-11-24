@@ -3,8 +3,7 @@ package com.example.ESD.model;
 import java.util.List;
 
 public class GradeRequest {
-    private List<Integer> studentIds; // List of student IDs
-    private List<String> grades; // List of grades
+    private List<Integer> studentIds;
 
     // Getters and Setters
     public List<Integer> getStudentIds() {
@@ -13,13 +12,5 @@ public class GradeRequest {
 
     public void setStudentIds(List<Integer> studentIds) {
         this.studentIds = studentIds;
-    }
-
-    public List<String> getGrades() {
-        return grades;
-    }
-
-    public void setGrades(List<String> grades) {
-        this.grades = grades;
     }
 }

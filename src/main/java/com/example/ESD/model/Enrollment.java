@@ -1,6 +1,5 @@
 package com.example.ESD.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,12 +11,13 @@ public class Enrollment {
 
     @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "sid")
-    private Student student;  // Relationship with the Student entity
+    private Student student;  // Relationship with Student entity
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "course_id", referencedColumnName = "cid")
-    private Course course;  // Relationship with the Course entity
+    private Course course;  // Relationship with Course entity
+
+    private String grade;  // Grade for the student in the course
 
     // Getters and Setters
     public int getEnrollmentId() {
@@ -42,5 +42,13 @@ public class Enrollment {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 }
