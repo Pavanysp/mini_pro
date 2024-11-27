@@ -1,57 +1,65 @@
--- Create the database
-CREATE DATABASE project;
 
+CREATE DATABASE IF NOT EXISTS project;
 USE project;
-
-CREATE TABLE faculty (
-                         fid INT AUTO_INCREMENT PRIMARY KEY,
-                         username VARCHAR(50) NOT NULL,
-                         password VARCHAR(255) NOT NULL
-);
 
 CREATE TABLE course (
                         cid INT AUTO_INCREMENT PRIMARY KEY,
-                        name VARCHAR(100) NOT NULL,
-                        description TEXT
+                        name VARCHAR(255) NOT NULL,
+                        description VARCHAR(255)
 );
 
-CREATE TABLE student (
-                         sid INT AUTO_INCREMENT PRIMARY KEY,
-                         username VARCHAR(50) NOT NULL,
-                         password VARCHAR(255) NOT NULL
-);
+INSERT INTO course (name, description) VALUES
+                                           ('Algorithms', 'Description'),
+                                           ('Ml', 'Description'),
+
+
 
 CREATE TABLE enrollment (
                             enrollment_id INT AUTO_INCREMENT PRIMARY KEY,
-                            student_id INT,
-                            course_id INT,
-                            FOREIGN KEY (student_id) REFERENCES student(sid) ON DELETE CASCADE,
-                            FOREIGN KEY (course_id) REFERENCES course(cid) ON DELETE CASCADE
+                            student_id INT NOT NULL,
+                            course_id INT NOT NULL,
+                            grade VARCHAR(255),
+                            FOREIGN KEY (student_id) REFERENCES student(sid),
+                            FOREIGN KEY (course_id) REFERENCES course(cid)
 );
+
+
+CREATE TABLE faculty (
+                         fid INT AUTO_INCREMENT PRIMARY KEY,
+                         username VARCHAR(255) NOT NULL UNIQUE,
+                         password VARCHAR(255) NOT NULL
+);
+
+INSERT INTO faculty (username, password) VALUES
+                                             ('sylesh', 'password123'),
+                                             ('phani', 'password456');
+
+CREATE TABLE student (
+                         sid INT AUTO_INCREMENT PRIMARY KEY,
+                         name VARCHAR(50) NOT NULL,
+                         email VARCHAR(100) NOT NULL UNIQUE,
+                         username VARCHAR(255) NOT NULL UNIQUE,
+                         password VARCHAR(255) NOT NULL
+);
+
+INSERT INTO student (name, email, username, password) VALUES
+                                                          ('Pavan', 'pavan@gmail.com', 'null', 'null'),
+                                                          ('Irfan', 'irfan@gmail.com', 'null', 'null'),
+
 
 CREATE TABLE teaching (
                           teaching_id INT AUTO_INCREMENT PRIMARY KEY,
-                          faculty_id INT,
-                          course_id INT,
-                          FOREIGN KEY (faculty_id) REFERENCES faculty(fid) ON DELETE CASCADE,
-                          FOREIGN KEY (course_id) REFERENCES course(cid) ON DELETE CASCADE
+                          faculty_id INT NOT NULL,
+                          course_id INT NOT NULL,
+                          FOREIGN KEY (faculty_id) REFERENCES faculty(fid),
+                          FOREIGN KEY (course_id) REFERENCES course(cid)
 );
 
-INSERT INTO faculty (username, password) VALUES ('faculty1', 'password1');
-INSERT INTO faculty (username, password) VALUES ('faculty2', 'password2');
+INSERT INTO teaching (faculty_id, course_id) VALUES
+                                                 (1, 1),
+                                                 (2, 2);
 
-INSERT INTO course (name, description) VALUES ('Course 1', 'Description for Course 1');
-INSERT INTO course (name, description) VALUES ('Course 2', 'Description for Course 2');
-
-
-INSERT INTO student (username, password) VALUES ('student1', 'password1');
-INSERT INTO student (username, password) VALUES ('student2', 'password2');
-
-INSERT INTO teaching (faculty_id, course_id) VALUES (1, 1);
-INSERT INTO teaching (faculty_id, course_id) VALUES (1, 2);
-INSERT INTO teaching (faculty_id, course_id) VALUES (2, 1);
-
-
-INSERT INTO enrollment (student_id, course_id) VALUES (1, 1);
-INSERT INTO enrollment (student_id, course_id) VALUES (1, 2);
-INSERT INTO enrollment (student_id, course_id) VALUES (2, 1);
+INSERT INTO enrollment (student_id, course_id, grade) VALUES
+                                                          (1, 1, 'A'),
+                                                          (2, 1, 'B'),
+                                                          (1, 2, 'A');
