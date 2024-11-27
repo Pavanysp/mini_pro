@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/faculty")
@@ -39,8 +40,12 @@ public class FacultyController {
 
     // Grade a student
     @PostMapping("/courses/{courseId}/grade/{studentId}")
-    public String gradeStudent(@PathVariable int courseId, @PathVariable int studentId, @RequestBody String grade) {
+    public String gradeStudent(
+            @PathVariable int courseId,
+            @PathVariable int studentId,
+            @RequestBody GradeRequest gradeRequest) {
         String username = getAuthenticatedUser();
+        String grade = gradeRequest.getGrade(); // Extract the grade value
         return facultyService.gradeStudent(username, courseId, studentId, grade);
     }
 
@@ -48,9 +53,16 @@ public class FacultyController {
     @PostMapping("/courses/{courseId}/grade")
     public String gradeStudents(
             @PathVariable int courseId,
-            @RequestBody GradeRequest gradeRequest) {
-        String username = getAuthenticatedUser();  // Get the authenticated faculty user
-        return facultyService.gradeStudents(username, courseId, gradeRequest.getStudentIds(), gradeRequest.getGrades());
+            @RequestBody List<GradeRequest> gradeRequests) {
+        String username = getAuthenticatedUser(); // Get the authenticated faculty user
+        List<Integer> studentIds = gradeRequests.stream()
+                .map(GradeRequest::getStudentId) // Assuming the request includes student IDs
+                .collect(Collectors.toList());
+        List<String> grades = gradeRequests.stream()
+                .map(GradeRequest::getGrade)
+                .collect(Collectors.toList());
+
+        return facultyService.gradeStudents(username, courseId, studentIds, grades);
     }
 
     // Helper method to get the authenticated username from the JWT token
