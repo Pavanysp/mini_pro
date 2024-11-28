@@ -8,9 +8,6 @@ CREATE TABLE course (
                         description VARCHAR(255)
 );
 
-INSERT INTO course (name, description) VALUES
-                                           ('Algorithms', 'Description'),
-                                           ('Ml', 'Description'),
 
 
 
@@ -30,9 +27,7 @@ CREATE TABLE faculty (
                          password VARCHAR(255) NOT NULL
 );
 
-INSERT INTO faculty (username, password) VALUES
-                                             ('sylesh', 'password123'),
-                                             ('phani', 'password456');
+
 
 CREATE TABLE student (
                          sid INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,9 +37,7 @@ CREATE TABLE student (
                          password VARCHAR(255) NOT NULL
 );
 
-INSERT INTO student (name, email, username, password) VALUES
-                                                          ('Pavan', 'pavan@gmail.com', 'null', 'null'),
-                                                          ('Irfan', 'irfan@gmail.com', 'null', 'null'),
+
 
 
 CREATE TABLE teaching (
@@ -55,11 +48,3 @@ CREATE TABLE teaching (
                           FOREIGN KEY (course_id) REFERENCES course(cid)
 );
 
-INSERT INTO teaching (faculty_id, course_id) VALUES
-                                                 (1, 1),
-                                                 (2, 2);
-
-INSERT INTO enrollment (student_id, course_id, grade) VALUES
-                                                          (1, 1, 'A'),
-                                                          (2, 1, 'B'),
-                                                          (1, 2, 'A');
