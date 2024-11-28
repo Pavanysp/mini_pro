@@ -10,6 +10,8 @@ import com.example.ESD.repository.StudentRepository;
 import com.example.ESD.repository.TeachingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.ESD.exceptions.UserNotFoundException;
+import com.example.ESD.exceptions.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +44,7 @@ public class FacultyService {
         if (teachings.stream().anyMatch(teaching -> teaching.getCourse().getCid() == courseId)) {
             return studentRepository.findByEnrollments_Course_Cid(courseId);  // Get students by course ID using Enrollment
         } else {
-            throw new RuntimeException("You don't teach this course.");
+            throw new CourseNotFoundException("You don't teach this course.");
         }
     }
 
@@ -69,14 +71,14 @@ public class FacultyService {
     public String gradeStudent(String username, int courseId, int studentId, String grade) {
         // Retrieve student and course by their IDs
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+                .orElseThrow(() -> new UserNotFoundException("Student not found"));
 
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new RuntimeException("Course not found"));
+                .orElseThrow(() -> new CourseNotFoundException("Course not found"));
 
         // Find the enrollment (student-course relation)
         Enrollment enrollment = enrollmentRepository.findByStudentAndCourse(student, course)
-                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+                .orElseThrow(() -> new EnrollmentNotFoundException("Enrollment not found"));
 
         // Set the grade for the student
         enrollment.setGrade(grade);

@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.example.ESD.exceptions.UserNotFoundException;
+import com.example.ESD.exceptions.*;
 
 import java.util.ArrayList;
 
@@ -22,15 +24,15 @@ public class CustomUserDetailsService implements org.springframework.security.co
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // Fetch the Faculty entity from the repository
         Faculty faculty = facultyRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return new User(faculty.getUsername(), faculty.getPassword(), new ArrayList<>());
     }
 
     // Utility method to hash passwords (for new user creation)
-    public String hashPassword(String plainPassword) {
-        return passwordEncoder.encode(plainPassword);
-    }
+    //public String hashPassword(String plainPassword) {
+       // return passwordEncoder.encode(plainPassword);
+    //}
 
     // Utility method to verify passwords
     public boolean verifyPassword(String plainPassword, String hashedPassword) {
