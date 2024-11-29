@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.ESD.exceptions.UnauthorizedAccessException;
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class AuthController {
 
         // Verify the password using BCrypt
         if (!userDetailsService.verifyPassword(authRequest.getPassword(), userDetails.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new UnauthorizedAccessException("Invalid credentials");
         }
 
         Authentication authentication = authenticationManager.authenticate(
