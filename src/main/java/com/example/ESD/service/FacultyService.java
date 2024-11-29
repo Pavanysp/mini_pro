@@ -51,13 +51,21 @@ public class FacultyService {
     // Grade a student
     public String gradeStudents(String username, int courseId, List<Integer> studentIds, List<String> grades) {
         if (studentIds.size() != grades.size()) {
-            throw new IllegalArgumentException("Number of students and grades must match");
+            throw new InvalidInputException("Number of students and grades must match.");
         }
+
+        // Define valid grade patterns
+        String validGradeRegex = "^[+-]?[A-FS]$";
 
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < studentIds.size(); i++) {
             int studentId = studentIds.get(i);
             String grade = grades.get(i);
+
+            // Validate grade format
+            if (!grade.matches(validGradeRegex)) {
+                throw new InvalidInputException("Invalid grade: " + grade + ". Grades must be +X, -X, or X where X is A, B, C, D, E, F, or S.");
+            }
 
             // Grade each student
             String gradingResult = gradeStudent(username, courseId, studentId, grade);
