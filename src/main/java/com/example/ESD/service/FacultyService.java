@@ -55,7 +55,7 @@ public class FacultyService {
         }
 
         // Define valid grade patterns
-        String validGradeRegex = "^[+-]?[A-FS]$";
+        String validGradeRegex = "^[A-FS][+-]?$";
 
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < studentIds.size(); i++) {
@@ -87,7 +87,10 @@ public class FacultyService {
         // Find the enrollment (student-course relation)
         Enrollment enrollment = enrollmentRepository.findByStudentAndCourse(student, course)
                 .orElseThrow(() -> new EnrollmentNotFoundException("Enrollment not found"));
-
+        String validGradeRegex = "^[A-FS][+-]?$";
+        if (!grade.matches(validGradeRegex)) {
+            throw new InvalidInputException("Invalid grade: " + grade + ". Grades must be +X, -X, or X where X is A, B, C, D, E, F, or S.");
+        }
         // Set the grade for the student
         enrollment.setGrade(grade);
 
