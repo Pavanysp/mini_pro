@@ -31,7 +31,7 @@ The project follows a layered architecture:
 │   │               │   ├── UnauthorizedAccessException.java
 │   │               │   └── UserNotFoundException.java
 │   │               ├── filter
-│   │               │   └── JwtFilter
+│   │               │   └── JwtFilter.java
 │   │               ├── model
 │   │               │   ├── AuthRequest.java
 │   │               │   ├── AuthResponse.java
